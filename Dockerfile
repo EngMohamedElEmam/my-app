@@ -16,11 +16,16 @@ COPY . /var/www/html
 # Set the 'ServerName' directive to suppress the warning
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Use a higher port number
+# Change the Apache port
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
+
+# Expose the port configured in the Apache configuration
 EXPOSE 8080
 
-# Create a non-root user
-RUN useradd -m myuser
+# Create a non-root user and add to the staff group
+RUN useradd -m myuser && usermod -aG staff myuser
+
+# Switch to the non-root user
 USER myuser
 
 # Start Apache when the container launches
